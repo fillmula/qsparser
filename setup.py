@@ -10,8 +10,8 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='qsparser',
-    version='0.0.1',
-    description=('The query string parser for Python.'),
+    version='0.0.2',
+    description=('Query string parser with nested structure supported.'),
     long_description=README,
     long_description_content_type='text/markdown',
     author='Fillmula Inc.',
