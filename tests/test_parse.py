@@ -19,13 +19,13 @@ class TestParse(TestCase):
     def test_parse_decodes_true_into_string(self):
         qs = 'a=true'
         result = parse(qs)
-        expected = {'a': True}
+        expected = {'a': 'true'}
         self.assertEqual(result, expected)
 
     def test_parse_decodes_false_into_string(self):
         obj = 'a=false'
         result = parse(obj)
-        expected = {'a': False}
+        expected = {'a': 'false'}
         self.assertEqual(result, expected)
 
     def test_parse_decodes_string_into_string(self):
@@ -46,19 +46,19 @@ class TestParse(TestCase):
         expected = {'a': '俊'}
         self.assertEqual(result, expected)
 
-    def test_parse_concats_multiple_items_with_the_ampersand(self):
+    def test_parse_decode_ampersand_concats_multiple_items(self):
         obj = 'a=b&c=d'
         result = parse(obj)
         expected = {'a': 'b', 'c': 'd'}
         self.assertEqual(result, expected)
 
-    def test_parse_encodes_dict_into_multiple_entries(self):
+    def test_parse_decode_entries_into_multiple_nested_object(self):
         obj = 'a[b]=c&d[e]=f&d[g]=h'
         result = parse(obj)
         expected = {'a': {'b': 'c'}, 'd': {'e': 'f', 'g': 'h'}}
         self.assertEqual(result, expected)
 
-    def test_parse_encodes_list_into_multiple_entries(self):
+    def test_parse_decode_list_into_multiple_nested_object(self):
         obj = 'a[0]=1&a[1]=2&a[2]=3&b[0]=q&b[1]=w&b[2]=e'
         result = parse(obj)
         expected = {'a': {'0': '1', '1': '2', '2': '3'}, 'b': {'0':'q', '1':'w', '2':'e'}}

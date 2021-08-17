@@ -1,6 +1,6 @@
 from typing import Any
-import urllib.parse
-import re
+from urllib.parse import quote,unquote
+from re import split,search
 
 def stringify(obj: dict[str, Any]) -> str:
     result = ''
@@ -25,8 +25,8 @@ def stringify(obj: dict[str, Any]) -> str:
 
     result = result.replace(" ","%20")
     for i in range(len(result)):
-        if re.search(u'[\u4e00-\u9fff]', result[i]):
-            result = result.replace(result[i],urllib.parse.quote(result[i]))
+        if search(u'[\u4e00-\u9fff]', result[i]):
+            result = result.replace(result[i],quote(result[i]))
     return result
 
 
@@ -49,48 +49,60 @@ def object_array(key: str, object: dict, result: str) -> str:
 
 
 def parse(qs: str) -> dict[str, Any]:
-    qs = qs.replace('[',',')
-    qs = qs.replace(']','')
-
-
-    tempObj = {}
+    qs = qs.split('&')
+    keys = []
+    values = []
     result = {}
-    querys = re.split('[& =]',qs)
-
-    for i in range(len(querys)):
-        if i % 2 == 0:
-            tempObj.update({querys[i]:urllib.parse.unquote(querys[i+1])})
-
-
-    for i in tempObj.items():
-        if i[1] == 'true':
-            tempObj.update({i[0]:True})
-        if i[1] == 'false':
-            tempObj.update({i[0]:False})
-        if '%20' in i[1]:
-            tempObj.update({i[0]:i[1].replace('%20',' ')})
-
-        if len(i[0]) > 1:
-            tempObj = mutiObj(i)
-            for j in tempObj.keys():
+    for i in qs:
+        i = i.split('=')
+        keys.append(i[0])
+        values.append(i[1])
+    for i in range(len(keys)):
+        if len(keys[i]) >1:
+            keys[i] = split('\]?\[|\]$', keys[i])[0:-1]
+        else:
+            keys[i] = split('\]?\[|\]$', keys[i])
+    print(keys)
+    for i in range(len(values)):
+        values[i] = unquote(values[i])
+        if '%20' in values[i]:
+            values[i] = values[i].replace('%20',' ')
+        if len(keys[i]) > 1:
+            temp = muti_obj(keys[i],values[i])
+            for j in temp.keys():
                 if j in result:
-                    result.update({j:{**result.get(j),**tempObj.get(j)}})
+                    result.update({j:{**result.get(j),**temp.get(j)}})
                 else:
-                    result.update({j:tempObj.get(j)})
-    for i in tempObj.keys():
-        if len(i) < 2:
-            result.update({i:tempObj.get(i)})
+                    result.update({j:temp.get(j)})
+        else:
+            for j in keys[i]:
+                result.update({j:values[i]})
     return result
+    #
+    # for i in tempObj.items():
+    #     if '%20' in i[1]:
+    #         tempObj.update({i[0]:i[1].replace('%20',' ')})
+    #
+    #     if len(i[0]) > 1:
+    #         tempObj = mutiObj(i)
+    #         for j in tempObj.keys():
+    #             if j in result:
+    #                 result.update({j:{**result.get(j),**tempObj.get(j)}})
+    #             else:
+    #                 result.update({j:tempObj.get(j)})
+    # for i in tempObj.keys():
+    #     if len(i) < 2:
+    #         result.update({i:tempObj.get(i)})
+    # return result
 
-def mutiObj(query):
-    key = query[0].split(',')
-
+def muti_obj(key,value):
+    temp = {}
     for i in range(len(key)-1):
-        temp = {key[i]:{key[i+1]:query[1]}}
+        temp = {key[i]:{key[i+1]:value}}
     return temp
 
 
 if __name__ == '__main__':
-    print(parse('a[0]=1&a[1]=2&a[2]=3&b[0]=q&b[1]=w&b[2]=%E4%BF%8A'))
+    print(parse('a=b&c=d'))
 
 
