@@ -49,60 +49,27 @@ def object_array(key: str, object: dict, result: str) -> str:
 
 
 def parse(qs: str) -> dict[str, Any]:
-    qs = qs.split('&')
-    keys = []
-    values = []
     result = {}
-    for i in qs:
-        i = i.split('=')
-        keys.append(i[0])
-        values.append(i[1])
-    for i in range(len(keys)):
-        if len(keys[i]) >1:
-            keys[i] = split('\]?\[|\]$', keys[i])[0:-1]
-        else:
-            keys[i] = split('\]?\[|\]$', keys[i])
-    print(keys)
-    for i in range(len(values)):
-        values[i] = unquote(values[i])
-        if '%20' in values[i]:
-            values[i] = values[i].replace('%20',' ')
-        if len(keys[i]) > 1:
-            temp = muti_obj(keys[i],values[i])
-            for j in temp.keys():
-                if j in result:
-                    result.update({j:{**result.get(j),**temp.get(j)}})
-                else:
-                    result.update({j:temp.get(j)})
-        else:
-            for j in keys[i]:
-                result.update({j:values[i]})
+    tokens = qs.split('&')
+    for token in tokens:
+        token = token.split('=')
+        key, value = token
+        items = split('\]?\[', key.removesuffix(']'))
+        assign_to_result(result, items, value)
     return result
-    #
-    # for i in tempObj.items():
-    #     if '%20' in i[1]:
-    #         tempObj.update({i[0]:i[1].replace('%20',' ')})
-    #
-    #     if len(i[0]) > 1:
-    #         tempObj = mutiObj(i)
-    #         for j in tempObj.keys():
-    #             if j in result:
-    #                 result.update({j:{**result.get(j),**tempObj.get(j)}})
-    #             else:
-    #                 result.update({j:tempObj.get(j)})
-    # for i in tempObj.keys():
-    #     if len(i) < 2:
-    #         result.update({i:tempObj.get(i)})
-    # return result
 
-def muti_obj(key,value):
-    temp = {}
-    for i in range(len(key)-1):
-        temp = {key[i]:{key[i+1]:value}}
-    return temp
+
+def assign_to_result(result: dict[str, Any], items: list[str], value: str) -> dict[str, Any]:
+    if len(items) == 1:
+        result[items[0]] = unquote(value)
+        return result
+    if items[0] not in result:
+        result[items[0]] = {}
+    assign_to_result(result[items[0]], items[1:], value)
+    return result
 
 
 if __name__ == '__main__':
-    print(parse('a=b&c=d'))
+    print(parse('a[b][c]=d&d[e]=f&d[g]=h'))
 
 
