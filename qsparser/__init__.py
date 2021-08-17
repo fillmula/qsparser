@@ -39,8 +39,7 @@ def parse(qs: str) -> dict[str, Any]:
     result = {}
     tokens = qs.split('&')
     for token in tokens:
-        token = token.split('=')
-        key, value = token
+        key, value = token.split('=')
         items = split('\]?\[', key.removesuffix(']'))
         assign_to_result(result, items, value)
     return result
