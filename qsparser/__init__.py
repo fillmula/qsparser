@@ -59,7 +59,7 @@ def assign_to_result(result: Union[dict[str, Any],
             result[items[0]] = []
         else:
             result[items[0]] = {}
-    if isinstance(result, list) and int(items[0]) > len(result):
+    if isinstance(result, list) and int(items[0]) >= len(result):
         if len(items) > 1 and items[1] == '0':
             result.append([])
         else:
