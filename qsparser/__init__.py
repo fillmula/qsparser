@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 from urllib.parse import quote, unquote
 from re import split
 
@@ -36,7 +36,7 @@ def gen_key(items: list[str]) -> str:
 
 
 def parse(qs: str) -> dict[str, Any]:
-    result = {}
+    result: dict[str, Any] = {}
     tokens = qs.split('&')
     for token in tokens:
         key, value = token.split('=')
@@ -45,11 +45,25 @@ def parse(qs: str) -> dict[str, Any]:
     return result
 
 
-def assign_to_result(result: dict[str, Any], items: list[str], value: str) -> dict[str, Any]:
+def assign_to_result(result: Union[dict[str, Any],
+                     list[Any]],
+                     items: list[str],
+                     value: str) -> Union[dict[str, Any], list[Any]]:
     if len(items) == 1:
-        result[items[0]] = unquote(value)
+        if isinstance(result, dict):
+            result[items[0]] = unquote(value)
+        else:
+            result.append(unquote(value))
         return result
-    if items[0] not in result:
-        result[items[0]] = {}
+    if isinstance(result, dict) and items[0] not in result:
+        if len(items) > 1 and items[1] == '0':
+            result[items[0]] = []
+        else:
+            result[items[0]] = {}
+    if isinstance(result, list) and int(items[0]) > len(result):
+        if len(items) > 1 and items[1] == '0':
+            result[items[0]] = []
+        else:
+            result[items[0]] = {}
     assign_to_result(result[items[0]], items[1:], value)
     return result

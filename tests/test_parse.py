@@ -61,5 +61,5 @@ class TestParse(TestCase):
     def test_parse_decodes_list_into_multiple_nested_object(self):
         obj = 'a[0]=1&a[1]=2&a[2]=3&b[0]=q&b[1]=w&b[2]=e'
         result = parse(obj)
-        expected = {'a': {'0': '1', '1': '2', '2': '3'}, 'b': {'0': 'q', '1': 'w', '2': 'e'}}
+        expected = {'a': ['1', '2', '3'], 'b': ['q' ,'w', 'e']}
         self.assertEqual(result, expected)
