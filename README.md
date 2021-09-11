@@ -2,24 +2,24 @@ qsparser
 ===========
 Query string parser with nested structure supported.
 
-## Usage 
+## Usage
 
 ### Stringify
 
 ```python
-import stringify from qsparser
+from qsparser import stringify
 
 # simple object
 stringify({'a': '5', 'b': 'c'}) # a=5&b=c
 
-# nested object 
+# nested object
 stringify({'a': {'b': 'c'},'d': {'e': 'f'}}) # a[b]=c&d[e]=f
 ```
 
 ### Parse
 
 ```python
-import parse from qsparser
+from qsparser import parse
 
 # simple string
 parse('a=5&b=c') # {'a': '5', 'b': 'c'}
