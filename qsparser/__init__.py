@@ -62,8 +62,11 @@ def assign_to_result(result: Union[dict[str, Any],
             result[items[0]] = {}
     if isinstance(result, list) and int(items[0]) > len(result):
         if len(items) > 1 and items[1] == '0':
-            result[items[0]] = []
+            result.append([])
         else:
-            result[items[0]] = {}
-    assign_to_result(result[items[0]], items[1:], value)
+            result.append({})
+    if isinstance(result, dict):
+        assign_to_result(result[items[0]], items[1:], value)
+    else:
+        assign_to_result(result[int(items[0])], items[1:], value)
     return result
