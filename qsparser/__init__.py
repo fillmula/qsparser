@@ -11,6 +11,7 @@ def stringify(obj: dict[str, Any]) -> str:
 
 
 def gen_tokens(items: list[str], value: Any) -> list[str]:
+    result: list[str] = []
     if value is True:
         return [f'{gen_key(items)}=true']
     elif value is False:
@@ -18,12 +19,10 @@ def gen_tokens(items: list[str], value: Any) -> list[str]:
     elif value is None:
         return [f'{gen_key(items)}=null']
     elif isinstance(value, list):
-        result: list[str] = []
         for i, v in enumerate(value):
             result.extend(gen_tokens(items + [str(i)], v))
         return result
     elif isinstance(value, dict):
-        result: list[str] = []
         for k, v in value.items():
             result.extend(gen_tokens(items + [str(k)], v))
         return result
