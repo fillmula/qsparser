@@ -63,3 +63,9 @@ class TestStringify(TestCase):
         result = stringify(obj)
         expected = 'a[0]=1&a[1]=2&a[2]=3&b[0]=q&b[1]=w&b[2]=e'
         self.assertEqual(result, expected)
+
+    def test_stringify_encodes_nested_items_into_a_long_string(self):
+        original = {"_includes": [{"favorites": {"_includes": ["user"]}}]}
+        expected = '_includes[0][favorites][_includes][0]=user'
+        result = stringify(original)
+        self.assertEqual(result, expected)

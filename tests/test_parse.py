@@ -79,3 +79,9 @@ class TestParse(TestCase):
                           {'n': ['Peter', '18']}],
                     'b': [{'n': ['Jack', '17']}]}
         self.assertEqual(result, expected)
+
+    def test_parse_decodes_a_long_string_into_nested_items(self):
+        original = '_includes[0][favorites][_includes][0]=user'
+        expected = {"_includes": [{"favorites": {"_includes": ["user"]}}]}
+        result = parse(original)
+        self.assertEqual(result, expected)
