@@ -36,6 +36,8 @@ def gen_key(items: list[str]) -> str:
 
 def parse(qs: str) -> dict[str, Any]:
     result: dict[str, Any] = {}
+    if qs == '':
+        return result
     tokens = qs.split('&')
     for token in tokens:
         key, value = token.split('=')

@@ -85,3 +85,9 @@ class TestParse(TestCase):
         expected = {"_includes": [{"favorites": {"_includes": ["user"]}}]}
         result = parse(original)
         self.assertEqual(result, expected)
+
+    def test_parse_decodes_empty_string_into_empty_object(self):
+        original = ''
+        expected = {}
+        result = parse(original)
+        self.assertEqual(result, expected)
