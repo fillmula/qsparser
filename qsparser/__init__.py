@@ -46,8 +46,7 @@ def parse(qs: str) -> dict[str, Any]:
     return result
 
 
-def assign_to_result(result: Union[dict[str, Any],
-                     list[Any]],
+def assign_to_result(result: Union[dict[str, Any], list[Any]],
                      items: list[str],
                      value: str) -> Union[dict[str, Any], list[Any]]:
     if len(items) == 1:
