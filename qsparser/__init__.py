@@ -48,13 +48,13 @@ def parse(qs: str) -> dict[str, Any]:
 
 def assign_to_result(result: Union[dict[str, Any], list[Any]],
                      items: list[str],
-                     value: str) -> Union[dict[str, Any], list[Any]]:
+                     value: str) -> None:
     if len(items) == 1:
         if isinstance(result, dict):
             result[items[0]] = unquote(value)
         else:
             result.append(unquote(value))
-        return result
+        return
     if isinstance(result, dict) and items[0] not in result:
         if len(items) > 1 and items[1] == '0':
             result[items[0]] = []
@@ -69,4 +69,4 @@ def assign_to_result(result: Union[dict[str, Any], list[Any]],
         assign_to_result(result[items[0]], items[1:], value)
     else:
         assign_to_result(result[int(items[0])], items[1:], value)
-    return result
+    return
