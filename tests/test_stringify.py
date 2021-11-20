@@ -69,3 +69,17 @@ class TestStringify(TestCase):
         expected = '_includes[0][favorites][_includes][0]=user'
         result = stringify(original)
         self.assertEqual(result, expected)
+
+    def test_stringify_encodes_none_into_null(self):
+        self.assertEqual(stringify({"a": None}), "a=null")
+
+    def test_stringify_encodes_null_string_into_null_string(self):
+        self.assertEqual(stringify({"a": "null"}), "a=%60null%60")
+        self.assertEqual(stringify({"a": "Null"}), "a=%60Null%60")
+        self.assertEqual(stringify({"a": "NULL"}), "a=%60NULL%60")
+
+    def test_stringify_encodes_none_string_into_none_string(self):
+        self.assertEqual(stringify({"a": "None"}), "a=%60None%60")
+
+    def test_stringify_encodes_nil_string_into_nil_string(self):
+        self.assertEqual(stringify({"a": "nil"}), "a=%60nil%60")

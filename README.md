@@ -34,6 +34,12 @@ parse('a[b]=c&d[e]=f') # {'a': {'b': 'c'},'d': {'e': 'f'}}
 pip install qsparser
 ```
 
+### Changelog
+
+#### 1.1.0
+* Rigid rules on string with null representing content.
+* Use private function names.
+
 ### Author
 
 `qsparser` is authored by Victor Teo and Chun Tse.

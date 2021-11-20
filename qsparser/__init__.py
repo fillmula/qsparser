@@ -1,7 +1,45 @@
-from typing import Any, Union
+from typing import Any, Union, Optional
 from urllib.parse import quote, unquote
 from re import split
 
+
+def escape_null(val: str) -> str:
+    if val == 'null':
+        return '`null`'
+    elif val == 'Null':
+        return '`Null`'
+    elif val == 'NULL':
+        return '`NULL`'
+    elif val == 'nil':
+        return '`nil`'
+    elif val == 'None':
+        return '`None`'
+    else:
+        return val
+
+def unescape_null(val: str) -> Optional[str]:
+    if val == '`null`':
+        return 'null'
+    elif val == '`Null`':
+        return 'Null'
+    elif val == '`NULL`':
+        return 'NULL'
+    elif val == '`nil`':
+        return 'nil'
+    elif val == '`None`':
+        return 'None'
+    elif val == 'null':
+        return None
+    elif val == 'Null':
+        return None
+    elif val == 'NULL':
+        return None
+    elif val == 'nil':
+        return None
+    elif val == 'None':
+        return None
+    else:
+        return val
 
 def stringify(obj: dict[str, Any]) -> str:
     tokens: list[str] = []
@@ -26,6 +64,8 @@ def gen_tokens(items: list[str], value: Any) -> list[str]:
         for k, v in value.items():
             result.extend(gen_tokens(items + [str(k)], v))
         return result
+    elif type(value) is str:
+        return [f'{gen_key(items)}={quote(escape_null(value))}']
     else:
         return [f'{gen_key(items)}={quote(str(value))}']
 
@@ -51,9 +91,9 @@ def assign_to_result(result: Union[dict[str, Any], list[Any]],
                      value: str) -> None:
     if len(items) == 1:
         if isinstance(result, dict):
-            result[items[0]] = unquote(value)
+            result[items[0]] = unescape_null(unquote(value))
         else:
-            result.append(unquote(value))
+            result.append(unescape_null(unquote(value)))
         return
     if isinstance(result, dict) and items[0] not in result:
         if len(items) > 1 and items[1] == '0':

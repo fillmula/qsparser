@@ -91,3 +91,21 @@ class TestParse(TestCase):
         expected = {}
         result = parse(original)
         self.assertEqual(result, expected)
+
+    def test_parse_decodes_null_into_null(self):
+        self.assertEqual(parse("a=null"), {"a": None})
+        self.assertEqual(parse("a=Null"), {"a": None})
+        self.assertEqual(parse("a=NULL"), {"a": None})
+        self.assertEqual(parse("a=nil"), {"a": None})
+        self.assertEqual(parse("a=None"), {"a": None})
+
+    def test_parse_decodes_null_string_into_null_string(self):
+        self.assertEqual(parse("a=%60null%60"), {"a": "null"})
+        self.assertEqual(parse("a=%60Null%60"), {"a": "Null"})
+        self.assertEqual(parse("a=%60NULL%60"), {"a": "NULL"})
+
+    def test_parse_decodes_none_string_into_none_string(self):
+        self.assertEqual(parse("a=%60None%60"), {"a": "None"})
+
+    def test_parse_decodes_nil_string_into_nil_string(self):
+        self.assertEqual(parse("a=%60nil%60"), {"a": "nil"})
