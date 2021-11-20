@@ -1,4 +1,5 @@
 from unittest import TestCase
+from datetime import date, datetime, timezone
 from qsparser import stringify
 
 
@@ -83,3 +84,11 @@ class TestStringify(TestCase):
 
     def test_stringify_encodes_nil_string_into_nil_string(self):
         self.assertEqual(stringify({"a": "nil"}), "a=%60nil%60")
+
+    def test_stringify_encodes_date_into_date_string(self):
+        self.assertEqual(stringify({"a": date(2020, 12, 24)}), "a=2020-12-24")
+
+    def test_stringify_encodes_datetime_into_datetime_string(self):
+        self.assertEqual(
+            stringify({"a": datetime(2020, 12, 24, 0, 0, 0, tzinfo=timezone.utc)}),
+            "a=2020-12-24T00%3A00%3A00.000Z")

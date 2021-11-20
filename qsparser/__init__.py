@@ -1,4 +1,5 @@
 from typing import Any, Union, Optional
+from datetime import date, datetime
 from urllib.parse import quote, unquote
 from re import split
 
@@ -59,6 +60,10 @@ def _gen_tokens(items: list[str], value: Any) -> list[str]:
         for k, v in value.items():
             result.extend(_gen_tokens(items + [str(k)], v))
         return result
+    elif isinstance(value, datetime):
+        return [f'{_gen_key(items)}={quote(value.isoformat(timespec="milliseconds")[:23] + "Z")}']
+    elif isinstance(value, date):
+        return [f'{_gen_key(items)}={str(value)}']
     elif type(value) is str:
         return [f'{_gen_key(items)}={quote(_escape_null(value))}']
     else:
